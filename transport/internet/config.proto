@@ -87,4 +87,6 @@ message SocketConfig {
   bytes bind_address = 5;
 
   uint32 bind_port = 6;
+
+  int32 tos = 7;
 }

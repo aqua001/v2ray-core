@@ -327,6 +327,7 @@ type SocketConfig struct {
 	Mark   int32  `json:"mark"`
 	TFO    *bool  `json:"tcpFastOpen"`
 	TProxy string `json:"tproxy"`
+	Tos    int32  `json:"tos"`
 }
 
 func (c *SocketConfig) Build() (*internet.SocketConfig, error) {
@@ -352,6 +353,7 @@ func (c *SocketConfig) Build() (*internet.SocketConfig, error) {
 		Mark:   c.Mark,
 		Tfo:    tfoSettings,
 		Tproxy: tproxy,
+		Tos:    c.Tos,
 	}, nil
 }
 
