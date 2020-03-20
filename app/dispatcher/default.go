@@ -23,6 +23,8 @@ import (
 	"v2ray.com/core/features/stats"
 	"v2ray.com/core/transport"
 	"v2ray.com/core/transport/pipe"
+
+	"golang.org/x/time/rate"
 )
 
 var (
@@ -171,6 +173,19 @@ func (d *DefaultDispatcher) getLink(ctx context.Context) (*transport.Link, *tran
 				}
 			}
 		}
+	}
+
+	r := 1 * 1024 * 1024                // 1MBps
+	burstSize := int(1.5 * 1024 * 1024) // 1.5MB
+	inboundLink.Writer = &RateLimitWriter{
+		Writer:  inboundLink.Writer,
+		Limiter: rate.NewLimiter(rate.Limit(r), burstSize),
+		Ctx:     ctx,
+	}
+	outboundLink.Writer = &RateLimitWriter{
+		Writer:  outboundLink.Writer,
+		Limiter: rate.NewLimiter(rate.Limit(r), burstSize),
+		Ctx:     ctx,
 	}
 
 	return inboundLink, outboundLink
